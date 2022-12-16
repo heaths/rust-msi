@@ -1,5 +1,6 @@
 use msi::{CodePage, Package, PackageType};
 use std::io::{Cursor, Write};
+#[cfg(not(target_family = "wasm"))]
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
@@ -7,6 +8,7 @@ use uuid::Uuid;
 
 #[test]
 fn set_summary_info_properties() {
+    #[cfg(not(target_family = "wasm"))]
     let sat_2017_mar_18_at_18_46_36_gmt =
         UNIX_EPOCH + Duration::from_secs(1489862796);
     let uuid =
@@ -19,6 +21,7 @@ fn set_summary_info_properties() {
         summary_info.set_author("Jane Doe".to_string());
         summary_info.set_comments("This app is the greatest!".to_string());
         summary_info.set_creating_application("cargo-test".to_string());
+        #[cfg(not(target_family = "wasm"))]
         summary_info.set_creation_time(sat_2017_mar_18_at_18_46_36_gmt);
         summary_info.set_subject("My Great App".to_string());
         summary_info.set_title("Awesome Package".to_string());
@@ -31,6 +34,7 @@ fn set_summary_info_properties() {
     assert_eq!(summary_info.author(), Some("Jane Doe"));
     assert_eq!(summary_info.comments(), Some("This app is the greatest!"));
     assert_eq!(summary_info.creating_application(), Some("cargo-test"));
+    #[cfg(not(target_family = "wasm"))]
     assert_eq!(
         summary_info.creation_time(),
         Some(sat_2017_mar_18_at_18_46_36_gmt)
@@ -73,6 +77,7 @@ fn dropping_package_persists_changes() {
 }
 
 #[test]
+#[cfg(not(target_family = "wasm"))]
 fn set_creation_time_to_now() {
     let timestamp = SystemTime::now();
 

@@ -1,6 +1,7 @@
 use clap::{App, Arg, SubCommand};
 use std::cmp;
 use std::io::{self, Read, Seek};
+#[cfg(not(target_family = "wasm"))]
 use time::OffsetDateTime;
 
 fn pad(mut string: String, fill: char, width: usize) -> String {
@@ -37,6 +38,7 @@ fn print_summary_info<F>(package: &msi::Package<F>) {
             languages.iter().map(msi::Language::tag).collect();
         println!("    Language: {}", tags.join(", "));
     }
+    #[cfg(not(target_family = "wasm"))]
     if let Some(timestamp) = summary_info.creation_time() {
         println!("  Created at: {}", OffsetDateTime::from(timestamp));
     }

@@ -2,6 +2,7 @@ use crate::internal::codepage::CodePage;
 use crate::internal::language::Language;
 use crate::internal::propset::{OperatingSystem, PropertySet, PropertyValue};
 use std::io::{self, Read, Seek, Write};
+#[cfg(not(target_family = "wasm"))]
 use std::time::SystemTime;
 use uuid::Uuid;
 
@@ -170,6 +171,7 @@ impl SummaryInfo {
 
     /// Gets the "creation time" property, if one is set.  This indicates the
     /// date/time when the package was created.
+    #[cfg(not(target_family = "wasm"))]
     pub fn creation_time(&self) -> Option<SystemTime> {
         match self.properties.get(PROPERTY_CREATION_TIME) {
             Some(&PropertyValue::FileTime(timestamp)) => Some(timestamp),
@@ -178,12 +180,14 @@ impl SummaryInfo {
     }
 
     /// Sets the "creation time" property.
+    #[cfg(not(target_family = "wasm"))]
     pub fn set_creation_time(&mut self, timestamp: SystemTime) {
         self.properties
             .set(PROPERTY_CREATION_TIME, PropertyValue::FileTime(timestamp));
     }
 
     /// Sets the "creation time" property to the current time.
+    #[cfg(not(target_family = "wasm"))]
     pub fn set_creation_time_to_now(&mut self) {
         self.set_creation_time(SystemTime::now());
     }
@@ -331,6 +335,7 @@ impl SummaryInfo {
 mod tests {
     use super::SummaryInfo;
     use crate::internal::language::Language;
+    #[cfg(not(target_family = "wasm"))]
     use std::time::SystemTime;
     use uuid::Uuid;
 
@@ -342,6 +347,7 @@ mod tests {
             Language::from_tag("en-US"),
             Language::from_tag("es-MX"),
         ];
+        #[cfg(not(target_family = "wasm"))]
         let timestamp = SystemTime::now();
         let uuid =
             Uuid::parse_str("0000002a-000c-0005-0c03-0938362b0809").unwrap();
@@ -351,6 +357,7 @@ mod tests {
         summary_info.set_author("Jane Doe");
         summary_info.set_comments("This app is the greatest!");
         summary_info.set_creating_application("cargo-test");
+        #[cfg(not(target_family = "wasm"))]
         summary_info.set_creation_time(timestamp);
         summary_info.set_languages(&languages);
         summary_info.set_subject("My Great App");
@@ -362,6 +369,7 @@ mod tests {
         assert_eq!(summary_info.author(), Some("Jane Doe"));
         assert_eq!(summary_info.comments(), Some("This app is the greatest!"));
         assert_eq!(summary_info.creating_application(), Some("cargo-test"));
+        #[cfg(not(target_family = "wasm"))]
         assert_eq!(summary_info.creation_time(), Some(timestamp));
         assert_eq!(summary_info.languages(), languages);
         assert_eq!(summary_info.subject(), Some("My Great App"));
@@ -378,6 +386,7 @@ mod tests {
         summary_info.clear_creating_application();
         assert_eq!(summary_info.creating_application(), None);
         summary_info.clear_creation_time();
+        #[cfg(not(target_family = "wasm"))]
         assert_eq!(summary_info.creation_time(), None);
         summary_info.clear_languages();
         assert_eq!(summary_info.languages(), Vec::new());

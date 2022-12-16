@@ -1,3 +1,4 @@
+#![cfg(not(target_family = "wasm"))]
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 // ========================================================================= //
